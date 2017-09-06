@@ -15,7 +15,7 @@ func main() {
 	app.Commands = []cli.Command{
 		{
 			Name:   "run",
-			Usage:  "A http static file server for serving react web application",
+			Usage:  "A http static file server",
 			Action: commands.ServeAction,
 			Before: validate.ValidateServer,
 			Flags: []cli.Flag{
