@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/dictyBase/static-server/logger"
 	"gopkg.in/urfave/cli.v1"
@@ -16,9 +17,18 @@ func ServeAction(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 2)
 	}
 	fs := http.FileServer(http.Dir(c.String("folder")))
-	http.Handle("/", loggerMw.Middleware(fs))
 	port := fmt.Sprintf(":%d", c.Int("port"))
-	log.Printf("listening to port %s\n", port)
+	if c.IsSet("sub-url") {
+		subURL := c.String("sub-url")
+		if !strings.HasSuffix(subURL, "/") {
+			subURL = subURL + "/"
+		}
+		http.Handle(subURL, http.StripPrefix(subURL, loggerMw.Middleware(fs)))
+		log.Printf("listening to port %s with url %s\n", port, subURL)
+	} else {
+		http.Handle("/", loggerMw.Middleware(fs))
+		log.Printf("listening to port %s\n", port)
+	}
 	log.Fatal(http.ListenAndServe(port, nil))
 	return nil
 }

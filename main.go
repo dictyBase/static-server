@@ -40,6 +40,11 @@ func main() {
 					Usage:  "Name of the log file, default goes to stderr",
 					EnvVar: "LOG_FILE",
 				},
+				cli.StringFlag{
+					Name:   "sub-url",
+					Usage:  "Alternate url path if the files are not being served from root",
+					EnvVar: "SUB_URL",
+				},
 			},
 		},
 	}
