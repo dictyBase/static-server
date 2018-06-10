@@ -8,6 +8,12 @@
   revision = "048808654bf0837d7a2c54be1170f9feb9a8df56"
 
 [[projects]]
+  name = "github.com/gorilla/handlers"
+  packages = ["."]
+  revision = "90663712d74cb411cbef281bc1e08c19d1a76145"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "418b41d23a1bf978c06faea5313ba194650ac088"
@@ -22,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "439a7f1881b56f06f517c2daaeb5f402fc4fd2bd364a7e0a1fc62d9b9a07eccb"
+  inputs-digest = "f0f3442829238349c0b3c584e30ba7f4c036956e42951a9b664d906c425885e7"
   solver-name = "gps-cdcl"
   solver-version = 1

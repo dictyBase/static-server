@@ -1,12 +1,14 @@
 package commands
 
 import (
+	"compress/gzip"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
 
 	"github.com/dictyBase/static-server/logger"
+	"github.com/gorilla/handlers"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -16,7 +18,7 @@ func ServeAction(c *cli.Context) error {
 	if err != nil {
 		return cli.NewExitError(err.Error(), 2)
 	}
-	fs := http.FileServer(http.Dir(c.String("folder")))
+	fs := handlers.CompressHandlerLevel(http.FileServer(http.Dir(c.String("folder"))), gzip.BestCompression)
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	if c.IsSet("sub-url") {
 		subURL := c.String("sub-url")
