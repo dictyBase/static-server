@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/dictyBase/go-middlewares"
   packages = ["middlewares/logrus"]
-  revision = "048808654bf0837d7a2c54be1170f9feb9a8df56"
+  revision = "0fd6848b3e92fbbf0dccb0c90b9c03ab8553dbee"
 
 [[projects]]
   name = "github.com/gorilla/handlers"
