@@ -20,9 +20,19 @@ func ServeAction(c *cli.Context) error {
 	}
 	fs := handlers.CompressHandlerLevel(http.FileServer(http.Dir(c.String("folder"))), gzip.BestCompression)
 	port := fmt.Sprintf(":%d", c.Int("port"))
-	subURL := c.String("sub-url") + "/"
-	http.Handle(subURL, lmw.Middleware(http.StripPrefix(subURL, fs)))
+	vfolder := c.String("folder")
+	if len(c.String("virtual-static-folder")) > 0 {
+		vfolder = c.String("virtual-static-folder")
+	}
+	subURL := vfolder + "/"
+	vhandler := http.StripPrefix(subURL, fs)
+	if len(c.String("sub-url")) > 0 {
+		subURL = fmt.Sprintf("%s%s/", c.String("sub-url"), vfolder)
+		vhandler = http.StripPrefix(c.String("sub-url"), fs)
+	}
+	http.Handle(subURL, lmw.Middleware(vhandler))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving client url %s", r.URL.Path)
 		http.ServeFile(w, r, filepath.Join(c.String("folder"), "index.html"))
 	})
 	log.Printf("listening to port %s with url %s\n", port, subURL)

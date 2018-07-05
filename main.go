@@ -44,7 +44,11 @@ func main() {
 					Name:   "sub-url",
 					Usage:  "Alternate url path if the files are not being served from root",
 					EnvVar: "SUB_URL",
-					Value:  "/static",
+				},
+				cli.StringFlag{
+					Name:   "virtual-static-folder,vf",
+					Usage:  "virtual static folder if it does not match the physical path",
+					EnvVar: "VIRTUAL_STATIC_FOLDER",
 				},
 			},
 		},
