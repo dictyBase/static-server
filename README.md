@@ -2,6 +2,7 @@
 A golang based file server with default logrus based logging.
 
 # Availabe commands 
+
 ```
 NAME:
    static-server - A new cli application
@@ -22,16 +23,19 @@ GLOBAL OPTIONS:
 ```
 
 ## Subcommands
+
 ```
 NAME:
-   run - A http static file server
+   static-server run - A http static file server
 
 USAGE:
    static-server run [command options] [arguments...]
 
 OPTIONS:
-   --folder value, -f value    Location of folder from where files will be served[required] [$STATIC_FOLDER]
-   --port value, -p value      http port, default is 9595 (default: 9595)
-   --log-format value          log format, json or text (default: "json") [$LOG_FORMAT]
-   --log-file value, -l value  Name of the log file, default goes to stderr [$LOG_FILE]
+   --folder value, -f value                   Location of folder from where files will be served[required] [$STATIC_FOLDER]
+   --port value, -p value                     http port, default is 9595 (default: 9595)
+   --log-format value                         log format, json or text (default: "json") [$LOG_FORMAT]
+   --log-file value, -l value                 Name of the log file, default goes to stderr [$LOG_FILE]
+   --sub-url value                            Alternate url path if the files are not being served from root [$SUB_URL]
+   --virtual-static-folder value, --vf value  virtual static folder if it does not match the physical path [$VIRTUAL_STATIC_FOLDER]
 ```
