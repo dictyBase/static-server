@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/dictyBase/static-server/logger"
 	"github.com/gorilla/handlers"
@@ -19,16 +20,17 @@ func ServeAction(c *cli.Context) error {
 		return cli.NewExitError(err.Error(), 2)
 	}
 	fs := handlers.CompressHandlerLevel(http.FileServer(http.Dir(c.String("folder"))), gzip.BestCompression)
+	vhandler := fs
 	port := fmt.Sprintf(":%d", c.Int("port"))
-	vfolder := c.String("folder")
-	if len(c.String("virtual-static-folder")) > 0 {
-		vfolder = c.String("virtual-static-folder")
-	}
-	subURL := vfolder + "/"
-	vhandler := http.StripPrefix(subURL, fs)
+	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
 	if len(c.String("sub-url")) > 0 {
-		subURL = fmt.Sprintf("%s%s/", c.String("sub-url"), vfolder)
-		vhandler = http.StripPrefix(c.String("sub-url"), fs)
+		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
+		subURL = fmt.Sprintf(
+			"%s%s",
+			prefixPath,
+			subURL,
+		)
+		vhandler = http.StripPrefix(prefixPath, fs)
 	}
 	http.Handle(subURL, lmw.Middleware(vhandler))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

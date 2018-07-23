@@ -8,6 +8,12 @@ import (
 	"gopkg.in/urfave/cli.v1"
 )
 
+var staticF = `The static files will only be served from this static folder
+		  and expected to be under the base folder. The url path should
+		  also match the filesystem. Any other path will
+		  be redirected to the index.html
+`
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "static-server"
@@ -22,7 +28,7 @@ func main() {
 				cli.StringFlag{
 					Name:   "folder, f",
 					Usage:  "Location of folder from where files will be served[required]",
-					EnvVar: "STATIC_FOLDER",
+					EnvVar: "FILE_FOLDER",
 				},
 				cli.IntFlag{
 					Name:  "port, p",
@@ -42,13 +48,14 @@ func main() {
 				},
 				cli.StringFlag{
 					Name:   "sub-url",
-					Usage:  "Alternate url path if the files are not being served from root",
+					Usage:  "Alternate url path that does not match the filesystem",
 					EnvVar: "SUB_URL",
 				},
 				cli.StringFlag{
-					Name:   "virtual-static-folder,vf",
-					Usage:  "virtual static folder if it does not match the physical path",
-					EnvVar: "VIRTUAL_STATIC_FOLDER",
+					Name:   "static-folder,sf",
+					Usage:  staticF,
+					EnvVar: "STATIC_FOLDER",
+					Value:  "/static",
 				},
 			},
 		},
