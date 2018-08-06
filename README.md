@@ -32,10 +32,13 @@ USAGE:
    static-server run [command options] [arguments...]
 
 OPTIONS:
-   --folder value, -f value                   Location of folder from where files will be served[required] [$STATIC_FOLDER]
-   --port value, -p value                     http port, default is 9595 (default: 9595)
-   --log-format value                         log format, json or text (default: "json") [$LOG_FORMAT]
-   --log-file value, -l value                 Name of the log file, default goes to stderr [$LOG_FILE]
-   --sub-url value                            Alternate url path if the files are not being served from root [$SUB_URL]
-   --virtual-static-folder value, --vf value  virtual static folder if it does not match the physical path [$VIRTUAL_STATIC_FOLDER]
+   --folder value, -f value           Location of folder from where files will be served[required] [$FILE_FOLDER]
+   --port value, -p value             http port, default is 9595 (default: 9595)
+   --log-format value                 log format, json or text (default: "json") [$LOG_FORMAT]
+   --log-file value, -l value         Name of the log file, default goes to stderr [$LOG_FILE]
+   --sub-url value                    Alternate url path that does not match the filesystem [$SUB_URL]
+   --static-folder value, --sf value  The static files will only be served from this static folder
+                                          and expected to be under the base folder. The url path should
+                                          also match the filesystem. Any other path will
+                                          be redirected to the index.html(default: "/static") [$STATIC_FOLDER]
 ```
