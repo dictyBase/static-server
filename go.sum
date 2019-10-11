@@ -2,8 +2,6 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dictyBase/go-middlewares v0.0.0-20180704154106-0fd6848b3e92 h1:6Ct0AGK1hpUw7twoZy2+4c4MuPZoA6oc4l1NwZOfzNY=
 github.com/dictyBase/go-middlewares v0.0.0-20180704154106-0fd6848b3e92/go.mod h1:DPbz2QP7K7kHh9pCuStlQ6qDEwYyUiWNS6WGCdgb3Nk=
-github.com/dictyBase/static-server v0.0.0-20180806153115-a2eb8f7235e0 h1:+qPtLfKs+V+hUeojarnxQIPekmhGsPk2C7P1X1LadhE=
-github.com/dictyBase/static-server v0.0.0-20180806153115-a2eb8f7235e0/go.mod h1:dl9tDSeYGwUlUMYJ1FYwZAnGKVd29ilJmvtSH26jias=
 github.com/gorilla/handlers v1.3.0 h1:tsg9qP3mjt1h4Roxp+M1paRjrVBfPSOpBuVclh6YluI=
 github.com/gorilla/handlers v1.3.0/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
