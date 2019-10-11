@@ -1,0 +1,8 @@
+github.com/dictyBase/go-middlewares v0.0.0-20180704154106-0fd6848b3e92 h1:6Ct0AGK1hpUw7twoZy2+4c4MuPZoA6oc4l1NwZOfzNY=
+github.com/dictyBase/go-middlewares v0.0.0-20180704154106-0fd6848b3e92/go.mod h1:DPbz2QP7K7kHh9pCuStlQ6qDEwYyUiWNS6WGCdgb3Nk=
+github.com/gorilla/handlers v1.3.0 h1:tsg9qP3mjt1h4Roxp+M1paRjrVBfPSOpBuVclh6YluI=
+github.com/gorilla/handlers v1.3.0/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
+github.com/sirupsen/logrus v0.8.7 h1:eQCwjvOfZ+1tNxGP/CpSRpThigJHY7cQufSQKZavlec=
+github.com/sirupsen/logrus v0.8.7/go.mod h1:pMByvHTf9Beacp5x1UXfOR9xyW/9antXMhjMPG0dEzc=
+gopkg.in/urfave/cli.v1 v1.20.0 h1:NdAVW6RYxDif9DhDHaAortIu956m2c0v+09AZBPTbE0=
+gopkg.in/urfave/cli.v1 v1.20.0/go.mod h1:vuBzUtMdQeixQj8LVd+/98pzhxNGQoyuPBlsXHOQNO0=
