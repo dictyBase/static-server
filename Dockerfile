@@ -1,13 +1,13 @@
-FROM golang:1.11.10-alpine3.9
+FROM golang:1.11.13-alpine3.10
 LABEL maintainer="Siddhartha Basu <siddhartha-basu@northwestern.edu>"
 RUN apk add --no-cache git build-base
 RUN mkdir -p /static-server
 WORKDIR /static-server
+COPY go.mod go.sum main.go ./
+RUN go mod download
 ADD commands commands
 ADD logger logger
 ADD validate validate
-COPY go.mod go.sum ./
-RUN go get ./...
 RUN go build -o app
 
 FROM alpine:3.7
