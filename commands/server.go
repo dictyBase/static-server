@@ -3,7 +3,6 @@ package commands
 import (
 	"compress/gzip"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -14,25 +13,7 @@ import (
 	"gopkg.in/urfave/cli.v1"
 )
 
-func sendSW(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile("service-worker.js")
-	if err != nil {
-		http.Error(w, "Couldn't read service worker file", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
-	w.Write(data)
-}
-
-func sendManifest(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile("manifest.json")
-	if err != nil {
-		http.Error(w, "Couldn't read manifest.json", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(data)
-}
+// rpm := regexp.MustCompile("precache-manifest")
 
 func ServeAction(c *cli.Context) error {
 	// create log folder
@@ -44,6 +25,10 @@ func ServeAction(c *cli.Context) error {
 	vhandler := fs
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
+	sw := "service-worker.js"
+	m := "manifest.json"
+	fav := "favicon.ico"
+
 	if len(c.String("sub-url")) > 0 {
 		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
 		subURL = fmt.Sprintf(
@@ -51,11 +36,24 @@ func ServeAction(c *cli.Context) error {
 			prefixPath,
 			subURL,
 		)
+		sw = fmt.Sprintf("%s/%s", c.String("sub-url"), sw)
+		m = fmt.Sprintf("%s/%s", c.String("sub-url"), m)
+		fav = fmt.Sprintf("%s/%s", c.String("sub-url"), fav)
 		vhandler = http.StripPrefix(prefixPath, fs)
 	}
 	http.Handle(subURL, lmw.Middleware(vhandler))
-	http.HandleFunc("/service-worker.js", sendSW)
-	http.HandleFunc("/manifest.json", sendManifest)
+	http.HandleFunc(sw, func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving %s", sw)
+		http.ServeFile(w, r, "service-worker.js")
+	})
+	http.HandleFunc(m, func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving %s", m)
+		http.ServeFile(w, r, "manifest.json")
+	})
+	http.HandleFunc(fav, func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving %s", fav)
+		http.ServeFile(w, r, "favicon.ico")
+	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("serving client url %s", r.URL.Path)
 		http.ServeFile(w, r, filepath.Join(c.String("folder"), "index.html"))
