@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/dictyBase/static-server/commands"
@@ -62,6 +63,6 @@ func main() {
 	}
 	err := app.Run(os.Args)
 	if err != nil {
-		cli.NewExitError(err.Error(), 2)
+		log.Fatal(err)
 	}
 }
