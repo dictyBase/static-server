@@ -32,9 +32,9 @@ func ServeAction(c *cli.Context) error {
 	vhandler := fs
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
-	swPath := sw
-	manifestPath := manifest
-	faviconPath := favicon
+	swPath := fmt.Sprintf("/%s", sworker)
+	manifestPath := fmt.Sprintf("/%s", manifest)
+	faviconPath := fmt.Sprintf("/%s", favicon)
 
 	if len(c.String("sub-url")) > 0 {
 		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
@@ -43,28 +43,31 @@ func ServeAction(c *cli.Context) error {
 			prefixPath,
 			subURL,
 		)
-		swPath = fmt.Sprintf("%s/%s", c.String("sub-url"), sw)
-		manifestPath = fmt.Sprintf("%s/%s", c.String("sub-url"), m)
-		faviconPath = fmt.Sprintf("%s/%s", c.String("sub-url"), fav)
+		swPath = fmt.Sprintf("%s/%s", c.String("sub-url"), sworker)
+		manifestPath = fmt.Sprintf("%s/%s", c.String("sub-url"), manifest)
+		faviconPath = fmt.Sprintf("%s/%s", c.String("sub-url"), favicon)
 		vhandler = http.StripPrefix(prefixPath, fs)
 	}
 	http.Handle(subURL, lmw.Middleware(vhandler))
 	http.HandleFunc(swPath, func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving service-worker file %s", swPath)
 		http.ServeFile(w, r, sworker)
 	})
 	http.HandleFunc(manifestPath, func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving manifest.json %s", manifestPath)
 		http.ServeFile(w, r, manifest)
 	})
 	http.HandleFunc(faviconPath, func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("serving favicon file %s", faviconPath)
 		http.ServeFile(w, r, favicon)
 	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if precacheRegex.FindString(r.URL.Path) != "" {
-			var url string
+			url := strings.TrimPrefix(r.URL.Path, "/")
 			if len(c.String("sub-url")) > 0 {
 				url = strings.TrimPrefix(r.URL.Path, fmt.Sprintf("%s%s", c.String("sub-url"), "/"))
 			}
-			log.Printf("serving precache-manifest %s", url)
+			log.Printf("serving precache-manifest file %s", url)
 			http.ServeFile(w, r, url)
 			return
 		}
