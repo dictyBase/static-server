@@ -4,6 +4,8 @@ github.com/dictyBase/go-middlewares v0.0.0-20180704154106-0fd6848b3e92 h1:6Ct0AG
 github.com/dictyBase/go-middlewares v0.0.0-20180704154106-0fd6848b3e92/go.mod h1:DPbz2QP7K7kHh9pCuStlQ6qDEwYyUiWNS6WGCdgb3Nk=
 github.com/gorilla/handlers v1.3.0 h1:tsg9qP3mjt1h4Roxp+M1paRjrVBfPSOpBuVclh6YluI=
 github.com/gorilla/handlers v1.3.0/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
+github.com/gorilla/handlers v1.4.2 h1:0QniY0USkHQ1RGCLfKxeNHK9bkDHGRYGNDFBCS+YARg=
+github.com/gorilla/handlers v1.4.2/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sirupsen/logrus v0.8.7 h1:eQCwjvOfZ+1tNxGP/CpSRpThigJHY7cQufSQKZavlec=
