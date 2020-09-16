@@ -11,7 +11,7 @@ import (
 
 	"github.com/dictyBase/static-server/logger"
 	"github.com/gorilla/handlers"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 
 	"github.com/dictyBase/static-server/commands"
 	"github.com/dictyBase/static-server/validate"
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 var staticF = `The static files will only be served from this static folder

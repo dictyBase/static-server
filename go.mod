@@ -5,5 +5,7 @@ require (
 	github.com/gorilla/handlers v1.3.0
 	github.com/sirupsen/logrus v0.8.7 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
-	gopkg.in/urfave/cli.v1 v1.20.0
+	github.com/urfave/cli v1.22.4
 )
+
+go 1.13
