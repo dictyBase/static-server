@@ -1,7 +1,7 @@
 package validate
 
 import (
-	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 func ValidateServer(c *cli.Context) error {

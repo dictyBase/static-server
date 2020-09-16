@@ -7,7 +7,7 @@ import (
 
 	loggerMw "github.com/dictyBase/go-middlewares/middlewares/logrus"
 
-	cli "gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 // GetLoggerMiddleware gets a net/http compatible instance of logrus
