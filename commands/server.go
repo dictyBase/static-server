@@ -14,13 +14,31 @@ import (
 	"github.com/urfave/cli"
 )
 
-const (
-	sworker  = "service-worker.js"
-	manifest = "manifest.json"
-	favicon  = "favicon.ico"
-)
-
 var precacheRegex = regexp.MustCompile(`(?m)precache-manifest\.\w+\.js`)
+
+func defaultStaticAssets() []string {
+	return []string{
+		"service-worker.js",
+		"manifest.json",
+		"favicon.ico",
+	}
+}
+
+func defaultPathMap() map[string]string {
+	pm := make(map[string]string)
+	for _, p := range defaultStaticAssets() {
+		pm[p] = fmt.Sprintf("/%s", p)
+	}
+	return pm
+}
+
+func customPathMap(subURL string) map[string]string {
+	pm := make(map[string]string)
+	for _, p := range defaultStaticAssets() {
+		pm[p] = fmt.Sprintf("%s/%s", subURL, p)
+	}
+	return pm
+}
 
 func ServeAction(c *cli.Context) error {
 	// create log folder
@@ -32,10 +50,6 @@ func ServeAction(c *cli.Context) error {
 	vhandler := fs
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
-	swPath := fmt.Sprintf("/%s", sworker)
-	manifestPath := fmt.Sprintf("/%s", manifest)
-	faviconPath := fmt.Sprintf("/%s", favicon)
-
 	if len(c.String("sub-url")) > 0 {
 		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
 		subURL = fmt.Sprintf(
@@ -43,24 +57,21 @@ func ServeAction(c *cli.Context) error {
 			prefixPath,
 			subURL,
 		)
-		swPath = fmt.Sprintf("%s/%s", c.String("sub-url"), sworker)
-		manifestPath = fmt.Sprintf("%s/%s", c.String("sub-url"), manifest)
-		faviconPath = fmt.Sprintf("%s/%s", c.String("sub-url"), favicon)
 		vhandler = http.StripPrefix(prefixPath, fs)
+		for file, path := range customPathMap(c.String("sub-url")) {
+			http.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+				http.ServeFile(w, r, file)
+			})
+		}
+	} else {
+		for file, path := range defaultPathMap() {
+			http.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+				http.ServeFile(w, r, file)
+			})
+		}
+
 	}
 	http.Handle(subURL, lmw.Middleware(vhandler))
-	http.HandleFunc(swPath, func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("serving service-worker file %s", swPath)
-		http.ServeFile(w, r, sworker)
-	})
-	http.HandleFunc(manifestPath, func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("serving manifest.json %s", manifestPath)
-		http.ServeFile(w, r, manifest)
-	})
-	http.HandleFunc(faviconPath, func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("serving favicon file %s", faviconPath)
-		http.ServeFile(w, r, favicon)
-	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if precacheRegex.FindString(r.URL.Path) != "" {
 			url := strings.TrimPrefix(r.URL.Path, "/")
