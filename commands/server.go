@@ -24,20 +24,38 @@ func defaultStaticAssets() []string {
 	}
 }
 
-func defaultPathMap() map[string]string {
+func pathMap(subURL string) map[string]string {
 	pm := make(map[string]string)
-	for _, p := range defaultStaticAssets() {
-		pm[p] = fmt.Sprintf("/%s", p)
+	if len(subURL) > 0 {
+		for _, p := range defaultStaticAssets() {
+			pm[p] = fmt.Sprintf("%s/%s", subURL, p)
+		}
+	} else {
+		for _, p := range defaultStaticAssets() {
+			pm[p] = fmt.Sprintf("/%s", p)
+		}
 	}
 	return pm
 }
 
-func customPathMap(subURL string) map[string]string {
-	pm := make(map[string]string)
-	for _, p := range defaultStaticAssets() {
-		pm[p] = fmt.Sprintf("%s/%s", subURL, p)
+func BaseHandlerAndPath(c *cli.Context) (string, http.Handler) {
+	h := handlers.CompressHandlerLevel(
+		http.FileServer(
+			http.Dir(c.String("folder")),
+		),
+		gzip.BestCompression,
+	)
+	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
+	if len(c.String("sub-url")) > 0 {
+		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
+		h = http.StripPrefix(prefixPath, h)
+		subURL = fmt.Sprintf(
+			"%s%s",
+			prefixPath,
+			subURL,
+		)
 	}
-	return pm
+	return subURL, h
 }
 
 func ServeAction(c *cli.Context) error {
@@ -48,7 +66,6 @@ func ServeAction(c *cli.Context) error {
 	}
 	fs := handlers.CompressHandlerLevel(http.FileServer(http.Dir(c.String("folder"))), gzip.BestCompression)
 	vhandler := fs
-	port := fmt.Sprintf(":%d", c.Int("port"))
 	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
 	if len(c.String("sub-url")) > 0 {
 		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
@@ -85,6 +102,7 @@ func ServeAction(c *cli.Context) error {
 		log.Printf("serving client url %s", r.URL.Path)
 		http.ServeFile(w, r, filepath.Join(c.String("folder"), "index.html"))
 	})
+	port := fmt.Sprintf(":%d", c.Int("port"))
 	log.Printf("listening to port %s with url %s\n", port, subURL)
 	log.Fatal(http.ListenAndServe(port, nil))
 	return nil
