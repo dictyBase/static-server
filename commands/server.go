@@ -51,12 +51,13 @@ func ServeAction(c *cli.Context) error {
 		))
 	}
 	rh := sh.NewRootHandler(subURL, c.String("folder"))
-	mux.Handle("/", lmw.Middleware(
-		handlers.CompressHandlerLevel(
-			rh,
-			gzip.BestCompression,
-		),
-	))
+	mux.Handle("/", hanlders.NoCache(
+		lmw.Middleware(
+			handlers.CompressHandlerLevel(
+				rh,
+				gzip.BestCompression,
+			),
+		)))
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	log.Printf("listening to port %s with url %s\n", port, subURL)
 	if err := http.ListenAndServe(port, mux); err != nil {
