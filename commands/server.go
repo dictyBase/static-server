@@ -6,6 +6,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dictyBase/go-middlewares/middlewares/cache"
+	"github.com/dictyBase/go-middlewares/middlewares/chain"
+	"github.com/dictyBase/go-middlewares/middlewares/nocache"
 	sh "github.com/dictyBase/static-server/handlers"
 	"github.com/dictyBase/static-server/logger"
 	"github.com/gorilla/handlers"
@@ -39,11 +42,14 @@ func ServeAction(c *cli.Context) error {
 	if err != nil {
 		return cli.NewExitError(err.Error(), 2)
 	}
+	cacheMw := cache.NewHTTPCache(c.Int("cache-duration"))
+	cacheChain := chain.NewChain(lmw.Middleware, cacheMw.Middleware)
+	nocacheChain := chain.NewChain(lmw.Middleware, nocache.Middleware)
 	subURL, baseHandler := sh.BaseHandlerAndPath(c)
 	mux := http.NewServeMux()
-	mux.Handle(subURL, lmw.Middleware(baseHandler))
+	mux.Handle(subURL, cacheChain.Then(baseHandler))
 	for file, path := range pathMap(c.String("sub-url")) {
-		mux.Handle(path, lmw.Middleware(
+		mux.Handle(path, cacheChain.Then(
 			handlers.CompressHandlerLevel(
 				&sh.AssetHandler{File: file},
 				gzip.BestCompression,
@@ -51,13 +57,12 @@ func ServeAction(c *cli.Context) error {
 		))
 	}
 	rh := sh.NewRootHandler(subURL, c.String("folder"))
-	mux.Handle("/", hanlders.NoCache(
-		lmw.Middleware(
-			handlers.CompressHandlerLevel(
-				rh,
-				gzip.BestCompression,
-			),
-		)))
+	mux.Handle("/", nocacheChain.Then(
+		handlers.CompressHandlerLevel(
+			rh,
+			gzip.BestCompression,
+		),
+	))
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	log.Printf("listening to port %s with url %s\n", port, subURL)
 	if err := http.ListenAndServe(port, mux); err != nil {
