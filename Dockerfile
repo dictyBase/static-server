@@ -5,11 +5,12 @@ RUN mkdir -p /static-server
 WORKDIR /static-server
 COPY go.mod ./
 COPY go.sum ./
-COPY main.go ./
 RUN go mod download
+COPY main.go ./
 ADD commands commands
 ADD logger logger
 ADD validate validate
+ADD handlers handlers
 RUN go build -o app
 
 FROM alpine:3.12
