@@ -49,20 +49,14 @@ func ServeAction(c *cli.Context) error {
 	mux := http.NewServeMux()
 	mux.Handle(subURL, cacheChain.Then(baseHandler))
 	for file, path := range pathMap(c.String("sub-url")) {
-		mux.Handle(path, cacheChain.Then(
-			handlers.CompressHandlerLevel(
-				&sh.AssetHandler{File: file},
-				gzip.BestCompression,
-			),
-		))
+		mux.Handle(path, cacheChain.Then(handlers.CompressHandlerLevel(
+			&sh.AssetHandler{File: file}, gzip.BestCompression,
+		)))
 	}
-	rh := sh.NewRootHandler(subURL, c.String("folder"))
-	mux.Handle("/", nocacheChain.Then(
-		handlers.CompressHandlerLevel(
-			rh,
-			gzip.BestCompression,
-		),
-	))
+	mux.Handle("/", nocacheChain.Then(handlers.CompressHandlerLevel(
+		sh.NewRootHandler(subURL, c.String("folder")),
+		gzip.BestCompression,
+	)))
 	port := fmt.Sprintf(":%d", c.Int("port"))
 	log.Printf("listening to port %s with url %s\n", port, subURL)
 	if err := http.ListenAndServe(port, mux); err != nil {
