@@ -28,28 +28,7 @@ A golang based file server with default logrus based logging.
 
 ```
 NAME:
-   static-server - A new cli application
-
-USAGE:
-   static-server [global options] command [command options] [arguments...]
-
-VERSION:
-   1.0.0
-
-COMMANDS:
-     run      A http static file server
-     help, h  Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --help, -h     show help
-   --version, -v  print the version
-```
-
-## Subcommands
-
-```
-NAME:
-   static-server run - A http static file server
+   static-server - A http static file server
 
 USAGE:
    static-server run [command options] [arguments...]
@@ -63,10 +42,8 @@ OPTIONS:
    --static-folder value, --sf value  The static files will only be served from this static folder
                                           and expected to be under the base folder. The url path should
                                           also match the filesystem. Any other path will
-                                          be redirected to the index.html(default: "/static") [$STATIC_FOLDER]
+                                          be redirected to the index.html (default: "/static") [$STATIC_FOLDER]   
+   --cache-duration value, -d value  how long the static assets will be cached given in months (default: 11)
+   
 ```
 
-## Developers
-
-<a href="https://sourcerer.io/cybersiddhu"><img src="https://sourcerer.io/assets/avatar/cybersiddhu" height="80px" alt="Sourcerer"></a>
-<a href="https://sourcerer.io/wildlifehexagon"><img src="https://sourcerer.io/assets/avatar/wildlifehexagon" height="80px" alt="Sourcerer"></a>
