@@ -58,6 +58,11 @@ func main() {
 					EnvVar: "STATIC_FOLDER",
 					Value:  "/static",
 				},
+				cli.IntFlag{
+					Name:  "cache-duration,d",
+					Usage: "how long the static assets will be cached given in months",
+					Value: 11,
+				},
 			},
 		},
 	}
