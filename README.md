@@ -1,7 +1,7 @@
 # static-server
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-blue.svg)](LICENSE)  
-[![Maintainability](https://api.codeclimate.com/v1/badges/c2684a014a3b74bac0cc/maintainability)](https://codeclimate.com/github/dictyBase/static-server/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c2684a014a3b74bac0cc/maintainability)](https://codeclimate.com/github/dictyBase/static-server/maintainability)   
 ![Release](https://badgen.net/github/release/dictyBase/static-server)
 ![Last commit](https://badgen.net/github/last-commit/dictyBase/static-server/develop)   
 [![Funding](https://badgen.net/badge/NIGMS/Rex%20L%20Chisholm,dictyBase,DCR/yellow?list=|)](https://projectreporter.nih.gov/project_info_description.cfm?aid=10024726&icde=0)
@@ -32,8 +32,6 @@ OPTIONS:
 ```
 
 # Misc badges
-[![Issues](https://badgen.net/codeclimate/issues/dictyBase/static-server)](https://codeclimate.com/github/dictyBase/static-server/issues)
-[![Maintainability percentage](https://badgen.net/codeclimate/maintainability-percentage/dictyBase/static-server)](https://codeclimate.com/github/dictyBase/static-server)  
 ![GitHub repo size](https://img.shields.io/github/repo-size/dictyBase/static-server?style=plastic)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dictyBase/static-server?style=plastic)
 [![Lines of Code](https://badgen.net/codeclimate/loc/dictyBase/static-server)](https://codeclimate.com/github/dictyBase/static-server/code)  
@@ -42,7 +40,7 @@ OPTIONS:
 ![Tags](https://badgen.net/github/tags/dictyBase/static-server)  
 ![Issues](https://badgen.net/github/issues/dictyBase/static-server)
 ![Open Issues](https://badgen.net/github/open-issues/dictyBase/static-server)
-![Closed Issues](https://badgen.net/github/closed-issues/dictyBase/static-server)
+![Closed Issues](https://badgen.net/github/closed-issues/dictyBase/static-server)   
 ![Total PRS](https://badgen.net/github/prs/dictyBase/static-server)
 ![Open PRS](https://badgen.net/github/open-prs/dictyBase/static-server)
 ![Closed PRS](https://badgen.net/github/closed-prs/dictyBase/static-server)
