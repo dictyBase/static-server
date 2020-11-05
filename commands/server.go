@@ -5,76 +5,65 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path/filepath"
-	"regexp"
-	"strings"
 
+	"github.com/dictyBase/go-middlewares/middlewares/cache"
+	"github.com/dictyBase/go-middlewares/middlewares/chain"
+	"github.com/dictyBase/go-middlewares/middlewares/nocache"
+	sh "github.com/dictyBase/static-server/handlers"
 	"github.com/dictyBase/static-server/logger"
 	"github.com/gorilla/handlers"
 	"github.com/urfave/cli"
 )
 
-const (
-	sworker  = "service-worker.js"
-	manifest = "manifest.json"
-	favicon  = "favicon.ico"
-)
+func defaultStaticAssets() []string {
+	return []string{
+		"service-worker.js",
+		"manifest.json",
+		"favicon.ico",
+	}
+}
 
-var precacheRegex = regexp.MustCompile(`(?m)precache-manifest\.\w+\.js`)
+func pathMap(subURL string) map[string]string {
+	pm := make(map[string]string)
+	if len(subURL) > 0 {
+		for _, p := range defaultStaticAssets() {
+			pm[p] = fmt.Sprintf("%s/%s", subURL, p)
+		}
+	} else {
+		for _, p := range defaultStaticAssets() {
+			pm[p] = fmt.Sprintf("/%s", p)
+		}
+	}
+	return pm
+}
 
 func ServeAction(c *cli.Context) error {
-	// create log folder
 	lmw, err := logger.GetLoggerMiddleware(c)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 2)
 	}
-	fs := handlers.CompressHandlerLevel(http.FileServer(http.Dir(c.String("folder"))), gzip.BestCompression)
-	vhandler := fs
-	port := fmt.Sprintf(":%d", c.Int("port"))
-	subURL := fmt.Sprintf("/%s/", strings.TrimPrefix(c.String("static-folder"), "/"))
-	swPath := fmt.Sprintf("/%s", sworker)
-	manifestPath := fmt.Sprintf("/%s", manifest)
-	faviconPath := fmt.Sprintf("/%s", favicon)
-
-	if len(c.String("sub-url")) > 0 {
-		prefixPath := fmt.Sprintf("/%s", strings.TrimPrefix(c.String("sub-url"), "/"))
-		subURL = fmt.Sprintf(
-			"%s%s",
-			prefixPath,
-			subURL,
-		)
-		swPath = fmt.Sprintf("%s/%s", c.String("sub-url"), sworker)
-		manifestPath = fmt.Sprintf("%s/%s", c.String("sub-url"), manifest)
-		faviconPath = fmt.Sprintf("%s/%s", c.String("sub-url"), favicon)
-		vhandler = http.StripPrefix(prefixPath, fs)
+	cacheMw := cache.NewHTTPCache(c.Int("cache-duration"))
+	cacheChain := chain.NewChain(lmw.Middleware, cacheMw.Middleware)
+	nocacheChain := chain.NewChain(lmw.Middleware, nocache.Middleware)
+	subURL, baseHandler := sh.BaseHandlerAndPath(c)
+	mux := http.NewServeMux()
+	mux.Handle(subURL, cacheChain.Then(baseHandler))
+	for file, path := range pathMap(c.String("sub-url")) {
+		mux.Handle(path, cacheChain.Then(handlers.CompressHandlerLevel(
+			&sh.AssetHandler{File: file}, gzip.BestCompression,
+		)))
 	}
-	http.Handle(subURL, lmw.Middleware(vhandler))
-	http.HandleFunc(swPath, func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("serving service-worker file %s", swPath)
-		http.ServeFile(w, r, sworker)
-	})
-	http.HandleFunc(manifestPath, func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("serving manifest.json %s", manifestPath)
-		http.ServeFile(w, r, manifest)
-	})
-	http.HandleFunc(faviconPath, func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("serving favicon file %s", faviconPath)
-		http.ServeFile(w, r, favicon)
-	})
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if precacheRegex.FindString(r.URL.Path) != "" {
-			url := strings.TrimPrefix(r.URL.Path, "/")
-			if len(c.String("sub-url")) > 0 {
-				url = strings.TrimPrefix(r.URL.Path, fmt.Sprintf("%s%s", c.String("sub-url"), "/"))
-			}
-			log.Printf("serving precache-manifest file %s", url)
-			http.ServeFile(w, r, url)
-			return
-		}
-		log.Printf("serving client url %s", r.URL.Path)
-		http.ServeFile(w, r, filepath.Join(c.String("folder"), "index.html"))
-	})
+	mux.Handle("/", nocacheChain.Then(handlers.CompressHandlerLevel(
+		sh.NewRootHandler(subURL, c.String("folder")),
+		gzip.BestCompression,
+	)))
+	port := fmt.Sprintf(":%d", c.Int("port"))
 	log.Printf("listening to port %s with url %s\n", port, subURL)
-	log.Fatal(http.ListenAndServe(port, nil))
+	if err := http.ListenAndServe(port, mux); err != nil {
+		return cli.NewExitError(
+			fmt.Sprintf("error in running server %s", err),
+			2,
+		)
+	}
 	return nil
 }

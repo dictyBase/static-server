@@ -25,44 +25,53 @@ func main() {
 			Usage:  "A http static file server",
 			Action: commands.ServeAction,
 			Before: validate.ValidateServer,
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:   "folder, f",
-					Usage:  "Location of folder from where files will be served[required]",
-					EnvVar: "FILE_FOLDER",
-				},
-				cli.IntFlag{
-					Name:  "port, p",
-					Usage: "http port, default is 9595",
-					Value: 9595,
-				},
-				cli.StringFlag{
-					Name:   "log-format",
-					Usage:  "log format, json or text",
-					EnvVar: "LOG_FORMAT",
-					Value:  "json",
-				},
-				cli.StringFlag{
-					Name:   "log-file, l",
-					Usage:  "Name of the log file, default goes to stderr",
-					EnvVar: "LOG_FILE",
-				},
-				cli.StringFlag{
-					Name:   "sub-url",
-					Usage:  "Alternate url path that does not match the filesystem",
-					EnvVar: "SUB_URL",
-				},
-				cli.StringFlag{
-					Name:   "static-folder,sf",
-					Usage:  staticF,
-					EnvVar: "STATIC_FOLDER",
-					Value:  "/static",
-				},
-			},
+			Flags:  serverFlags(),
 		},
 	}
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func serverFlags() []cli.Flag {
+	return []cli.Flag{
+		cli.StringFlag{
+			Name:   "folder, f",
+			Usage:  "Location of folder from where files will be served[required]",
+			EnvVar: "FILE_FOLDER",
+		},
+		cli.IntFlag{
+			Name:  "port, p",
+			Usage: "http port, default is 9595",
+			Value: 9595,
+		},
+		cli.StringFlag{
+			Name:   "log-format",
+			Usage:  "log format, json or text",
+			EnvVar: "LOG_FORMAT",
+			Value:  "json",
+		},
+		cli.StringFlag{
+			Name:   "log-file, l",
+			Usage:  "Name of the log file, default goes to stderr",
+			EnvVar: "LOG_FILE",
+		},
+		cli.StringFlag{
+			Name:   "sub-url",
+			Usage:  "Alternate url path that does not match the filesystem",
+			EnvVar: "SUB_URL",
+		},
+		cli.StringFlag{
+			Name:   "static-folder,sf",
+			Usage:  staticF,
+			EnvVar: "STATIC_FOLDER",
+			Value:  "/static",
+		},
+		cli.IntFlag{
+			Name:  "cache-duration,d",
+			Usage: "how long the static assets will be cached given in months",
+			Value: 11,
+		},
 	}
 }
