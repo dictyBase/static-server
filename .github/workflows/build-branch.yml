@@ -6,12 +6,12 @@ on:
       - master
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: set up golang
         uses: actions/setup-go@v2
         with:
-          go-version: 1.13.15
+          go-version: 1.16.3
       - name: check out code
         uses: actions/checkout@v2
       - name: set up docker buildx
