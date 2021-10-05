@@ -9,14 +9,9 @@ jobs:
     steps:
       - name: check out code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: set up golang
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16.3
       - name: run linter
-        uses: reviewdog/action-golangci-lint@v1
+        uses: reviewdog/action-golangci-lint@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           golangci_lint_flags: "-c .golangci.yml"
+          go_version: '1.17'
