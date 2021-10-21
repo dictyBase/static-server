@@ -1,4 +1,4 @@
-FROM golang:1.16.3-alpine3.13 as builder
+FROM golang:1.17.2-alpine3.14 as builder
 LABEL maintainer="Siddhartha Basu <siddhartha-basu@northwestern.edu>"
 ENV GOPROXY https://proxy.golang.org
 ENV GO111MODULE=auto \
@@ -14,7 +14,6 @@ RUN go mod download
 COPY main.go ./
 ADD commands commands
 ADD logger logger
-ADD validate validate
 ADD handlers handlers
 RUN go build -o /bin/app \
     -a \
@@ -25,7 +24,7 @@ RUN go build -o /bin/app \
 RUN strip /bin/app \
     && upx -q -9 /bin/app
 
-FROM alpine:3.13
+FROM alpine:3.14
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /bin/app /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/app"]
