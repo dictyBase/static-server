@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/dictyBase/static-server/commands"
-	"github.com/dictyBase/static-server/validate"
 	"github.com/urfave/cli"
 )
 
@@ -24,7 +23,6 @@ func main() {
 			Name:   "run",
 			Usage:  "A http static file server",
 			Action: commands.ServeAction,
-			Before: validate.ValidateServer,
 			Flags:  serverFlags(),
 		},
 	}
@@ -37,9 +35,10 @@ func main() {
 func serverFlags() []cli.Flag {
 	return []cli.Flag{
 		cli.StringFlag{
-			Name:   "folder, f",
-			Usage:  "Location of folder from where files will be served[required]",
-			EnvVar: "FILE_FOLDER",
+			Name:     "folder, f",
+			Usage:    "Location of folder from where files will be served[required]",
+			EnvVar:   "FILE_FOLDER",
+			Required: true,
 		},
 		cli.IntFlag{
 			Name:  "port, p",
